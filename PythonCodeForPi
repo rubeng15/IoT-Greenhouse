@@ -1,0 +1,58 @@
+import paho.mqtt.client as mqtt
+from influxdb import InfluxDBClient
+import json
+
+# MQTT settings
+MQTT_BROKER = "192.168.0.146"
+MQTT_PORT = 1883
+MQTT_TOPICS = [("esp32/temperature", 0), ("esp32/humidity", 0), ("esp32/soil_moisture", 0),
+               ("esp32/led", 0), ("esp32/heater", 0), ("esp32/fan", 0), ("esp32/water_pump", 0)]
+
+# InfluxDB settings
+INFLUXDB_ADDRESS = 'localhost'
+INFLUXDB_PORT = 8086
+INFLUXDB_USER = 'root'
+INFLUXDB_PASSWORD = 'root'
+INFLUXDB_DATABASE = 'Serre'
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
+    for topic in MQTT_TOPICS:
+        client.subscribe(topic)
+
+def on_message(client, userdata, msg):
+    print(f"Topic: {msg.topic}, Message: {msg.payload.decode()}")
+    try:
+        payload = float(msg.payload.decode())
+    except ValueError:
+        payload = msg.payload.decode()
+
+    json_body = [
+        {
+            "measurement": msg.topic,
+            "fields": {
+                "value": payload
+            }
+        }
+    ]
+    influxdb_client.write_points(json_body)
+
+def setup_influxdb():
+    client = InfluxDBClient(INFLUXDB_ADDRESS, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
+    databases = client.get_list_database()
+    if not any(db['name'] == INFLUXDB_DATABASE for db in databases):
+        client.create_database(INFLUXDB_DATABASE)
+    client.switch_database(INFLUXDB_DATABASE)
+    return client
+# Initialize InfluxDB client
+influxdb_client = setup_influxdb()
+
+# Initialize MQTT client
+mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+
+mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+
+# Blocking call that processes network traffic, dispatches callbacks and handles reconnecting.
+mqtt_client.loop_forever()
