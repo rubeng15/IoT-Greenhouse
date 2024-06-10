@@ -8,18 +8,18 @@ LCD Display: Weergave van actuele gegevens en statusinformatie op een I2C LCD sc
 Prototyping Board: Alle componenten zijn gesoldeerd op een prototyping board voor betrouwbare verbindingen.
 Benodigdheden
 Hardware
-Raspberry Pi of een vergelijkbare microcontroller
-DHT11 temperatuur- en luchtvochtigheidssensor
-DS18B20 temperatuursensor
-Bodemvochtigheidssensor
-I2C LCD display
-Waterpomp en relaismodule
-Ventilator en relaismodule
-RFID-lezer en tags
-Oude plantenbak voor de kasstructuur
-Prototyping board en soldeergereedschap
+Raspberry Pi of een vergelijkbare microcontroller,
+DHT11 temperatuur- en luchtvochtigheidssensor,
+DS18B20 temperatuursensor,
+Bodemvochtigheidssensor,
+I2C LCD display,
+Waterpomp en relaismodule,
+Ventilator en relaismodule,
+RFID-lezer en tags,
+Oude plantenbak voor de kasstructuur,
+Prototyping board en soldeergereedschap,
 Software
-Raspbian OS (of een vergelijkbaar besturingssysteem)
-Python 3
-Node.js en npm
-Grafana
+Raspbian OS (of een vergelijkbaar besturingssysteem),
+Python 3,
+Node.js en npm,
+Grafana,
